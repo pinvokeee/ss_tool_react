@@ -67,7 +67,38 @@ const jobData =
 
                 {
                     name: "ZERO",
-                    info:[],
+                    info:
+                    [
+                        {
+                            name: "TEST",
+                            items:
+                            [
+                                {
+                                    name: "A1",
+                                    prefix: "@",
+                                    suffix: ";",
+                                },
+
+                                {
+                                    name: "金額",
+                                    prefix: "\\",
+                                    suffix: "",
+                                }
+                            ]
+                        },
+
+                        {
+                            name: "ABC",
+                            items:
+                            [
+                                {
+                                    name: "B1",
+                                    prefix: "",
+                                    suffix: ";",
+                                },
+                            ]
+                        }
+                    ]
                 }
             ]
         },
@@ -78,7 +109,20 @@ const jobData =
             [
                 {
                     name: "AAA",
-                    info:[],
+                    info:
+                    [
+                        {
+                            name: "TEST",
+                            items:
+                            [
+                                {
+                                    name: "A1",
+                                    prefix: "@",
+                                    suffix: ";",
+                                },
+                            ]
+                        },
+                    ]
                 }
             ]
         }

@@ -1,6 +1,7 @@
 import { CheckBox } from "@mui/icons-material"
-import { Box, Card, CardContent, Checkbox, FormControlLabel, Paper, Stack, styled, TextField, Typography } from "@mui/material"
-import { IUseEditState } from "../../../hooks"
+import { Box, Card, CardContent, Checkbox, FormControlLabel, InputAdornment, Paper, Stack, styled, TextField, Typography } from "@mui/material"
+import { IInfoItemValue, IJobInfoEdit, IMainJobEdit, IUseEditState } from "../../../hooks"
+import { TextPreView } from "../../TextPreView"
 import { FieldLabel } from "../FieldLabel"
 
 export interface IFieldProps 
@@ -14,6 +15,8 @@ export interface IFieldProps
 
 export const FieldBase = (props : IFieldProps) =>
 {
+    console.log(`redender: ${props.labelText}`);
+
     return (
         <Stack spacing={2} sx={{ width: "100%" }}>
             <FieldLabel text={ props.labelText }></FieldLabel>
@@ -30,6 +33,8 @@ export const FieldBase = (props : IFieldProps) =>
 
 export const MultiLineTextField = (props : IFieldProps) =>
 {
+    console.log(`redender: ${props.labelText}`);
+
     return (
         <Stack spacing={2} sx={{ width: "100%" }}>
             <FieldLabel text={ props.labelText }></FieldLabel>
@@ -48,15 +53,17 @@ export const MultiLineTextField = (props : IFieldProps) =>
 
 export const ReadOnlyField = (props : IFieldProps) =>
 {
+    console.log(`redender: ${props.labelText}`);
+
     return (
         <Card sx={{ width: "100%" }}>
             <CardContent>
             <Typography sx={{ textAlign: "left", fontSize: "16px", fontWeight: "bold" }} color="text.secondary" gutterBottom>
                 { props.labelText }
             </Typography>   
-            <PreView>
+            <TextPreView>
             { props.onGetValue?.call(this) }                
-            </PreView>
+            </TextPreView>
             {/* <Typography sx={{ textAlign: "left"}}>
                 { props.onGetValue?.call(this) }
             </Typography>                  */}
@@ -66,14 +73,6 @@ export const ReadOnlyField = (props : IFieldProps) =>
     )
 }
 
-const PreView = styled("pre")((theme) =>
-(
-    {
-        textAlign: "left",
-        fontFamily: "inherit",
-    }
-));
-
 interface IInfoInputFieldProps
 {
     labelText: string,
@@ -82,8 +81,22 @@ interface IInfoInputFieldProps
     editStateHook : IUseEditState,
 }
 
+const changeInputChecked = (hook : IUseEditState, target : IJobInfoEdit, newValue : boolean) =>
+{
+    target.checked = newValue;
+    hook.setJobEditData([ ...hook.jobEditData ]);
+}
+
+const changeInputValue = (hook : IUseEditState, target : IInfoItemValue, newValue : string) =>
+{
+    target.value = newValue;
+    hook.setJobEditData([ ...hook.jobEditData ]);
+}
+
 export const InfoInputField = (props : IInfoInputFieldProps) =>
 {
+    console.log(`redender: ${props.labelText}`);
+
     return (
         <Stack spacing={2} sx={{ width: "100%" }}>
             <FieldLabel text={ props.labelText }></FieldLabel>
@@ -91,7 +104,40 @@ export const InfoInputField = (props : IInfoInputFieldProps) =>
             {props.editStateHook.subJob?.info.map(item =>
             {
                 return (
-                    <FormControlLabel control={<Checkbox />} label={item.name} />
+                    <>
+                    <FormControlLabel 
+                        key={ item.key }
+                        control=
+                        {
+                            <Checkbox 
+                            checked={item.checked}
+                            value={item.checked} 
+                            onChange={ 
+                                (e : React.ChangeEvent<HTMLInputElement>, value : boolean) => changeInputChecked(props.editStateHook, item, value) 
+                            }/>
+                        } 
+                        label={item.name} />
+                        {
+                            item.checked ? item.items.map(infovalue =>
+                            {
+                                return (
+                                    <>
+                                        <TextField 
+                                        onChange={ (e) => changeInputValue(props.editStateHook, infovalue, e.target.value) }
+                                        value = { infovalue.value } 
+                                        disabled={!item.checked}
+                                        // placeholder={ infovalue.name } 
+                                        label ={ infovalue.name } 
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">{infovalue.prefix}</InputAdornment>,
+                                            endAdornment: <InputAdornment position="end">{infovalue.suffix}</InputAdornment>,
+                                            }}></TextField>
+                                    </>
+                                )
+                            }) : <></>
+                        }
+                    </>
+
                 )
             })}
             {/* <FormControlLabel control={<Checkbox defaultChecked />} label={"ada"} /> */}

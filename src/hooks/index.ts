@@ -1,12 +1,12 @@
-import { useCallback, useEffect, useState } from "react"
-import { IJobData, IMainJOB, ISubJOB } from "../contexts/types/interface"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { IInfoItem, IJobData, IJobInfo, IMainJOB, ISubJOB } from "../contexts/types/interface"
 
 export interface IUseEditState
 {
-    mainJob : IMainJOB | null,
-    setMainJob : (job : IMainJOB | null) => void,
-    subJob : ISubJOB | null,
-    setSubJob : (job : ISubJOB | null) => void,
+    mainJob : IMainJobEdit | null,
+    setMainJob : (job : IMainJobEdit | null) => boolean,
+    subJob : ISubJobEdit | null,
+    setSubJob : (job : ISubJobEdit | null) => void,
     title : string, 
     setTitle : (text : string) => void,
     freeText : string,
@@ -14,21 +14,98 @@ export interface IUseEditState
     reason : string,
     setReasonText : (text : string) => void,
 
+    jobEditData : IMainJobEdit[],
+    setJobEditData : (data : IMainJobEdit[]) => void,
+
     setReset : () => void,
+
+    onHandleAutoSelect? : () => void,
 }
 
-export const useEditState = () : IUseEditState =>
+export interface IMainJobEdit extends IMainJOB
 {
-    const [mainJob, setMainJobValue] = useState<IMainJOB | null>(null);
-    const [subJob, setSubJobValue] = useState<ISubJOB | null>(null);
+    subJobs : ISubJobEdit[],
+}
 
-    const [title, setTitle] = useState<string>("");
+export interface ISubJobEdit extends ISubJOB
+{
+    info : IJobInfoEdit[],
+}
+
+export interface IJobInfoEdit extends IJobInfo
+{
+    checked : boolean,
+    items : IInfoItemValue[],
+}
+
+export interface IInfoItemValue extends IInfoItem
+{
+    value : string,
+}
+
+const initEditJobData = (baseJobData : IJobData) =>
+{
+    return baseJobData.jobs.map(m =>
+    {
+        const ed_mjob : IMainJobEdit = 
+        {
+            ...m,
+            subJobs : m.subJobs.map(s =>
+            {
+                const ed_sjob : ISubJobEdit = 
+                {
+                    ...s,
+                    info: s.info.map(i => 
+                    {
+                        const ed_info : IJobInfoEdit = 
+                        {
+                            ...i,
+                            checked : false,
+                            items : i.items.map(v =>
+                            {
+                                const ed_value: IInfoItemValue = 
+                                {
+                                    ...v,
+                                    value : "",
+                                }   
+                                
+                                return ed_value;
+                            })
+                        }
+
+                        return ed_info;
+                    })
+                }   
+
+                return ed_sjob;
+            })
+        };
+
+        return ed_mjob;
+    });
+}
+
+export const useEditState = (baseJobData? : IJobData) : IUseEditState =>
+{
+    const [baseIJobData] = useState<IJobData>(baseJobData as IJobData);
+
+    const [mainJob, setMainJobValue] = useState<IMainJobEdit | null>(null);
+    const [subJob, setSubJobValue] = useState<ISubJobEdit | null>(null);
+
+    const [title, setTitleValue] = useState<string>("");
     const [reason, setReasonText] = useState<string>("");
     const [freeText, setFreeText] = useState<string>("");
 
-    const name = mainJob?.name;
+    const [jobEditData, setJobEditData] = useState<IMainJobEdit[]>([]);
 
-    const aaa : any = [];
+    useEffect(() =>
+    {
+        if (baseJobData != null)
+        {
+            setJobEditData(initEditJobData(baseIJobData));
+        }
+
+    }, []);
 
     const setReset = () =>
     {
@@ -37,49 +114,41 @@ export const useEditState = () : IUseEditState =>
         setTitle("");
         setReasonText("");
         setFreeText("");
+
+        setJobEditData(initEditJobData(baseIJobData));
     }
 
-    const setMainJob = useCallback((job : IMainJOB | null) =>
+    const setTitle = useCallback((newValue : string) =>
+    {
+        setTitleValue(newValue);
+        
+    }, [title]);
+
+    const setMainJob = useCallback((job : IMainJobEdit | null) =>
     {
         setMainJobValue(job);
         setSubJobValue(null);
 
-        if (job != null)
+        if (job != null && job.subJobs.length == 1)
         {
-            // aaa[job] = "test";
+            setSubJob(job.subJobs[0]);
+            return true;
         }
-
-        console.log(mainJob, subJob);
+        
+        return false;
 
     }, [mainJob]);
 
-    const setSubJob = useCallback((job : ISubJOB | null) =>
+    const setSubJob = useCallback((job : ISubJobEdit | null) =>
     {
         setSubJobValue(job);
+
     }, [subJob]);
-
-    // useEffect(() =>
-    // {
-    //     setSubJob(null);
-    //     console.log({mainJob, subJob});
-
-    //     console.log(name);
-
-    // }, [mainJob]);
-
-
-    // useEffect(() =>
-    // {
-    //     // setSubJob(null);
-    //     console.log(subJob);
-
-    // }, [subJob]);
-
 
     useEffect(() =>
     {
-        console.log({ title, freeText, reason });
-    }, [title, reason, freeText]);
+        console.log("TEST1");
+    }, [freeText]);
 
     return {
         mainJob,
@@ -92,6 +161,9 @@ export const useEditState = () : IUseEditState =>
         setReasonText,
         freeText,
         setFreeText,
+
+        jobEditData,
+        setJobEditData,
 
         setReset
     }

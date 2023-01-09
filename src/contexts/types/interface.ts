@@ -59,7 +59,8 @@ export interface IFieldSetting
     // onChangeObject?: (newValue : Object) => any,
 }
 
-export interface InputValues
+export interface SnackBarState
 {
-    
+    isOpen : boolean,
+    message : string,
 }

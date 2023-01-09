@@ -33,7 +33,14 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         caption: "職種",
                         type: "jobSelecter",
                         valueType: "jobData",
-                    
+                        
+                        onGetValue: () =>
+                        {
+                            const m = editStateHook.mainJob != null ? editStateHook.mainJob.name : "";
+                            const s = editStateHook.subJob != null ? editStateHook.subJob.name : "";
+
+                            return `メイン:${m}\nサブ:${s}`
+                        }
                     },
 
                     {
@@ -59,6 +66,21 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         caption: "内容",
                         type: "infoList",
                         valueType: "string",
+
+                        onGetValue: () =>
+                        {
+                            if (editStateHook.subJob == null) return "";
+
+                            const s = editStateHook.subJob.info.filter(inf => inf.checked).map(info =>
+                            {
+                               return info.items.map(v => [v.name, `${v.prefix}${v.value}${v.suffix}`]);
+                            });
+
+                            console.log(editStateHook.subJob);
+                            console.log(s);
+
+                            return "";
+                        }
                     },
 
                     {

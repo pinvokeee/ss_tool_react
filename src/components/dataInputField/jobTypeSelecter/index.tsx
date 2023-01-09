@@ -1,6 +1,9 @@
-import { FormControl, InputLabel, MenuItem, Select, Stack } from "@mui/material"
+import { FormControl, InputLabel, MenuItem, Select, Snackbar, Stack } from "@mui/material"
+import React, { useContext, useState } from "react";
 import { IJobData, IMainJOB } from "../../../contexts/types/interface";
-import { IUseEditState } from "../../../hooks";
+import { IMainJobEdit, IUseEditState } from "../../../hooks";
+import { contextSnackBarState, setSnackBarStateContext } from "../../../Provider/ProviderSnackBarContext";
+import { generateUuid } from "../../../util/util";
 import { FieldLabel } from "../FieldLabel"
 
 export interface IFieldJobSelecterProps
@@ -8,25 +11,30 @@ export interface IFieldJobSelecterProps
     labelText: string,
     defaultValue?: string,
 
-    mainJobList : IMainJOB[],
+    mainJobList : IMainJobEdit[],
     editStateHook : IUseEditState,
 }
 
 export const FieldJobTypeSelecter = (props : IFieldJobSelecterProps) =>
 {
+    // const snackbarState = useContext(contextSnackBarState);
+    const setSnackbarState = useContext(setSnackBarStateContext);
+
     const getMainJob = () =>
     {
-        if (props.editStateHook.mainJob == null) return null;
+        if (props.editStateHook.mainJob == null) return "";
         return props.editStateHook.mainJob.name;
     }
 
     const getSubJob = () =>
     {
-        if (props.editStateHook.subJob == null) return null;
+        if (props.editStateHook.subJob == null) return "";
         return props.editStateHook.subJob.name;
     }
 
     return (
+        <React.Fragment>
+
             <Stack spacing={2} sx={{ width: "100%" }}>
                 <FieldLabel text={ props.labelText }></FieldLabel>
 
@@ -36,7 +44,13 @@ export const FieldJobTypeSelecter = (props : IFieldJobSelecterProps) =>
                         {
                             props.mainJobList.map(job =>
                             {
-                                return (<MenuItem value={job.name} onClick={ () => props.editStateHook.setMainJob(job) }>{ job.name }</MenuItem>);
+                                return (<MenuItem value={job.name} onClick={ () => 
+                                {
+                                    const autoSelect = props.editStateHook.setMainJob(job);
+
+                                    setSnackbarState({ message: "サブJOBを自動で選択しました", isOpen: autoSelect });
+                                }
+                                }>{ job.name }</MenuItem>);
                             })
                         }
                     </Select>
@@ -54,6 +68,8 @@ export const FieldJobTypeSelecter = (props : IFieldJobSelecterProps) =>
                     </Select>
                 </FormControl>
             
-            </Stack>
+            </Stack>            
+        </React.Fragment>
+
         )
 }
