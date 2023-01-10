@@ -15,7 +15,7 @@ export interface IFieldProps
 
 export const FieldBase = (props : IFieldProps) =>
 {
-    console.log(`redender: ${props.labelText}`);
+    // console.log(`redender: ${props.labelText}`);
 
     return (
         <Stack spacing={2} sx={{ width: "100%" }}>
@@ -33,7 +33,7 @@ export const FieldBase = (props : IFieldProps) =>
 
 export const MultiLineTextField = (props : IFieldProps) =>
 {
-    console.log(`redender: ${props.labelText}`);
+    // console.log(`redender: ${props.labelText}`);
 
     return (
         <Stack spacing={2} sx={{ width: "100%" }}>
@@ -53,8 +53,8 @@ export const MultiLineTextField = (props : IFieldProps) =>
 
 export const ReadOnlyField = (props : IFieldProps) =>
 {
-    console.log(`redender: ${props.labelText}`);
-    {console.log("AAA")}
+    // console.log(`redender: ${props.labelText}`);
+
     return (
         <Card sx={{ width: "100%" }}>
             <CardContent>
@@ -95,7 +95,7 @@ const changeInputValue = (hook : IUseEditState, target : IInfoItemValue, newValu
 
 export const InfoInputField = (props : IInfoInputFieldProps) =>
 {
-    console.log(`redender: ${props.labelText}`);
+    // console.log(`redender: ${props.labelText}`);
 
     return (
         <Stack spacing={2} sx={{ width: "100%" }}>
