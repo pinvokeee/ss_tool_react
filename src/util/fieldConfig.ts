@@ -40,6 +40,13 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                             const s = editStateHook.subJob != null ? editStateHook.subJob.name : "";
 
                             return `メイン:${m}\nサブ:${s}`
+                        },
+
+                        onGetValueArray: ()=>
+                        {
+                            const m = editStateHook.mainJob != null ? editStateHook.mainJob.name : "";
+                            const s = editStateHook.subJob != null ? editStateHook.subJob.name : "";
+                            return [m, s];
                         }
                     },
 

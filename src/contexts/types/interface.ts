@@ -52,6 +52,8 @@ export interface IFieldSetting
     onGetValue?: () => any,
     onChange?: (newValue : any) => void,
 
+    onGetValueArray?: () => string[],
+    
     onHandleMenu?: () => any,
 
 

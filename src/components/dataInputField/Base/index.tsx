@@ -1,5 +1,5 @@
 import { CheckBox } from "@mui/icons-material"
-import { Box, Card, CardContent, Checkbox, FormControlLabel, InputAdornment, Paper, Stack, styled, TextField, Typography } from "@mui/material"
+import { Accordion, AccordionDetails, AccordionSummary, Box, Card, CardContent, Checkbox, FormControlLabel, InputAdornment, Paper, Stack, styled, TextField, Typography } from "@mui/material"
 import { IInfoItemValue, IJobInfoEdit, IMainJobEdit, IUseEditState } from "../../../hooks"
 import { TextPreView } from "../../TextPreView"
 import { FieldLabel } from "../FieldLabel"
@@ -105,37 +105,49 @@ export const InfoInputField = (props : IInfoInputFieldProps) =>
             {
                 return (
                     <>
-                    <FormControlLabel 
-                        key={ item.key }
-                        control=
-                        {
-                            <Checkbox 
-                            checked={item.checked}
-                            value={item.checked} 
-                            onChange={ 
-                                (e : React.ChangeEvent<HTMLInputElement>, value : boolean) => changeInputChecked(props.editStateHook, item, value) 
-                            }/>
-                        } 
-                        label={item.name} />
-                        {
-                            item.checked ? item.items.map(infovalue =>
+                    <Accordion sx={{ border: "none" }} expanded={item.checked} onChange={(e, ex) => changeInputChecked(props.editStateHook, item, ex) }>
+                        <AccordionSummary>
+                            <FormControlLabel 
+                            sx={{userSelect: "none"}}
+                            key={ item.key }
+                            control=
                             {
-                                return (
-                                    <>
-                                        <TextField 
-                                        onChange={ (e) => changeInputValue(props.editStateHook, infovalue, e.target.value) }
-                                        value = { infovalue.value } 
-                                        disabled={!item.checked}
-                                        // placeholder={ infovalue.name } 
-                                        label ={ infovalue.name } 
-                                        InputProps={{
-                                            startAdornment: <InputAdornment position="start">{infovalue.prefix}</InputAdornment>,
-                                            endAdornment: <InputAdornment position="end">{infovalue.suffix}</InputAdornment>,
-                                            }}></TextField>
-                                    </>
-                                )
-                            }) : <></>
-                        }
+                                <Checkbox 
+                                checked={item.checked}
+                                value={item.checked} 
+                                onChange={ 
+                                    (e : React.ChangeEvent<HTMLInputElement>, value : boolean) => changeInputChecked(props.editStateHook, item, value) 
+                                }/>
+                            } 
+                            label={item.name} />
+                        </AccordionSummary>
+
+                        <AccordionDetails>
+                            <Stack spacing={4}>
+                            {
+                                item.checked ? item.items.map(infovalue =>
+                                {
+                                    return (
+                                        <>
+                                            <TextField 
+                                            onChange={ (e) => changeInputValue(props.editStateHook, infovalue, e.target.value) }
+                                            value = { infovalue.value } 
+                                            disabled={!item.checked}
+                                            placeholder={ infovalue.name } 
+                                            label ={ infovalue.name } 
+                                            InputProps={{
+                                                startAdornment: <InputAdornment position="start">{infovalue.prefix}</InputAdornment>,
+                                                endAdornment: <InputAdornment position="end">{infovalue.suffix}</InputAdornment>,
+                                                }}></TextField>
+                                        </>
+                                    )
+                                }) : <></>
+                            }
+                            </Stack>
+                        </AccordionDetails>
+
+                    </Accordion>
+
                     </>
 
                 )
