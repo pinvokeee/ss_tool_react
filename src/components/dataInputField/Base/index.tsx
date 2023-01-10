@@ -54,7 +54,7 @@ export const MultiLineTextField = (props : IFieldProps) =>
 export const ReadOnlyField = (props : IFieldProps) =>
 {
     console.log(`redender: ${props.labelText}`);
-
+    {}
     return (
         <Card sx={{ width: "100%" }}>
             <CardContent>
