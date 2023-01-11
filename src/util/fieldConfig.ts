@@ -16,8 +16,8 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         caption: "タイトル",
                         type: "text",
                         valueType: "string",
-                        onGetValue: (() : string  => editStateHook.title),
-                        onChange: (newValue : string) =>
+                        getter: (() : string  => editStateHook.title),
+                        setter: (newValue : string) =>
                         {
                             editStateHook.setTitle(newValue);
                         }
@@ -34,20 +34,13 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         type: "jobSelecter",
                         valueType: "jobData",
                         
-                        onGetValue: () =>
+                        getter: () =>
                         {
                             const m = editStateHook.mainJob != null ? editStateHook.mainJob.name : "";
                             const s = editStateHook.subJob != null ? editStateHook.subJob.name : "";
 
-                            return `メイン:${m}\nサブ:${s}`
-                        },
-
-                        onGetValueArray: ()=>
-                        {
-                            const m = editStateHook.mainJob != null ? editStateHook.mainJob.name : "";
-                            const s = editStateHook.subJob != null ? editStateHook.subJob.name : "";
                             return [m, s];
-                        }
+                        },
                     },
 
                     {
@@ -56,7 +49,7 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         type: "readonly",
                         valueType: "string",
 
-                        onGetValue: (() : string  => 
+                        getter: (() : string  => 
                         {
                             if (editStateHook.subJob == null) return "";
                             return editStateHook.subJob.tips;
@@ -74,7 +67,7 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         type: "infoList",
                         valueType: "string",
 
-                        onGetValue: () =>
+                        getter: () =>
                         {
                             if (editStateHook.subJob == null) return "";
 
@@ -82,9 +75,6 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                             {
                                return info.items.map(v => [v.name, `${v.prefix}${v.value}${v.suffix}`]);
                             });
-
-                            console.log(editStateHook.subJob);
-                            console.log(s);
 
                             return "";
                         }
@@ -95,8 +85,8 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         caption: "フリー入力",
                         type: "multiLineText",
                         valueType: "string",
-                        onGetValue: () => editStateHook.freeText,
-                        onChange: (newValue : string) =>
+                        getter: () => editStateHook.freeText,
+                        setter: (newValue : string) =>
                         {
                             editStateHook.setFreeText(newValue);
                         }
@@ -112,8 +102,8 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         caption: "退職理由",
                         type: "multiLineText",
                         valueType: "string",
-                        onGetValue: () => editStateHook.reason,
-                        onChange: (newValue : string) =>
+                        getter: () => editStateHook.reason,
+                        setter: (newValue : string) =>
                         {
                             editStateHook.setReasonText(newValue);
                         }

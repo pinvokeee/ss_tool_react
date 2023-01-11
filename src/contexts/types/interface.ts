@@ -49,16 +49,8 @@ export interface IFieldSetting
     type: "text" | "multiLineText" | "jobSelecter" | "infoList" | "readonly",
     valueType : "string" | "jobData",
 
-    onGetValue?: () => any,
-    onChange?: (newValue : any) => void,
-
-    onGetValueArray?: () => string[],
-    
-    onHandleMenu?: () => any,
-
-
-    // onGetObject?: () => any,
-    // onChangeObject?: (newValue : Object) => any,
+    getter?: () => any,
+    setter?: (newValue : any) => void,
 }
 
 export interface SnackBarState

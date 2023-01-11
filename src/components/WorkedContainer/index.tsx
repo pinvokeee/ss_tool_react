@@ -13,9 +13,9 @@ import { WorkedTimeLine } from "../WorkedTimeLine";
 
 const createDataField = ( fieldSetting : IFieldSetting, context : IJobData, editStateHook : IUseEditState ) =>
 {
-    if (fieldSetting.type == "text") return <FieldBase key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} onGetValue={ fieldSetting.onGetValue } onHandle={ fieldSetting.onChange }></FieldBase>;
-    if (fieldSetting.type == "multiLineText") return <MultiLineTextField key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} onGetValue={ fieldSetting.onGetValue } onHandle={ fieldSetting.onChange }></MultiLineTextField>;
-    if (fieldSetting.type == "readonly") return <ReadOnlyField key={fieldSetting.no} labelText={`${fieldSetting.caption}`} onGetValue={ fieldSetting.onGetValue }></ReadOnlyField>;
+    if (fieldSetting.type == "text") return <FieldBase key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} onGetValue={ fieldSetting.getter } onHandle={ fieldSetting.setter }></FieldBase>;
+    if (fieldSetting.type == "multiLineText") return <MultiLineTextField key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} onGetValue={ fieldSetting.getter } onHandle={ fieldSetting.setter }></MultiLineTextField>;
+    if (fieldSetting.type == "readonly") return <ReadOnlyField key={fieldSetting.no} labelText={`${fieldSetting.caption}`} onGetValue={ fieldSetting.getter }></ReadOnlyField>;
     if (fieldSetting.type == "jobSelecter") return <FieldJobTypeSelecter key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} mainJobList={editStateHook.jobEditData} editStateHook={editStateHook} ></FieldJobTypeSelecter>;
     if (fieldSetting.type == "infoList") return <InfoInputField key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} editStateHook={editStateHook}></InfoInputField>
     return <></>

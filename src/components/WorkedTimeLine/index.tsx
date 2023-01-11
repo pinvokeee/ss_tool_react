@@ -19,7 +19,7 @@ const PreView = (props: IPreViewText) =>
 
 const createContentElement = (item: IFieldSetting) =>
 {
-  const arr = item.onGetValueArray?.call(this);
+  const arr = item.getter?.call(this);
 
   if (item.type == "jobSelecter")
   {
@@ -35,7 +35,7 @@ const createContentElement = (item: IFieldSetting) =>
     </>
   }
 
-  return <TextPreView>{item.onGetValue?.call(this)}</TextPreView>
+  return <TextPreView>{item.getter?.call(this)}</TextPreView>
 }
 
 const PreviewCard = styled(Paper)((theme) => 
