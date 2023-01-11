@@ -1,6 +1,8 @@
+import { IMainJobEdit } from "../../hooks";
+
 export interface IJobData
 {
-    jobs : IMainJOB[],
+    jobs : IMainJobEdit[],
 }
 
 export interface IMainJOB
@@ -34,31 +36,28 @@ export interface IInfoItem
 
 export interface IFieldConfig 
 {
-    blocks: IFieldBlock[],
+    blocks: IFieldAreaLine[],
 }
 
-export interface IFieldBlock
+export interface IFieldAreaLine
 {
-    items: IFieldSetting[],
+    options: IFieldOption[],
 }
 
-export interface IFieldSetting
+export interface IFieldOption
 {
     no: number,
     caption: string,
     type: "text" | "multiLineText" | "jobSelecter" | "infoList" | "readonly",
     valueType : "string" | "jobData",
 
-    onGetValue?: () => any,
-    onChange?: (newValue : any) => void,
+    updateTriggerName?: string,
 
-    onGetValueArray?: () => string[],
-    
-    onHandleMenu?: () => any,
+    getUpdateKey?: () => string,
 
-
-    // onGetObject?: () => any,
-    // onChangeObject?: (newValue : Object) => any,
+    update?: () => void,
+    getter?: () => any,
+    setter?: (value: any) => void,
 }
 
 export interface SnackBarState
