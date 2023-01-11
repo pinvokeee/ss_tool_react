@@ -6,11 +6,13 @@ import { AppToolBar } from './components/AppBar';
 import { WorkedTimeLine } from './components/WorkedTimeLine';
 import { WorkedContainer } from './components/WorkedContainer';
 import { BottomBar } from './components/BottomBar';
-import { IJobData, SnackBarState } from './contexts/types/interface';
+import { IFieldConfig, IJobData, SnackBarState } from './contexts/types/interface';
 import { contextIJobData, useContextIJobData } from './contexts/contexts';
 import { useEditState } from './hooks';
 import { generateUuid } from './util/util';
 import { contextSnackBarState, ProviderSnackBarContext, setSnackBarStateContext } from './Provider/ProviderSnackBarContext';
+import { Store } from './hooks/index2';
+import { InitConfig } from './util/fieldConfig';
 
 export const AppLayoutContainer = styled("div")(({ theme }) => 
 (
@@ -60,11 +62,12 @@ const job_data : IJobData =
     })
   }
 
+const GlobalStore: Store = new Store().create(job_data);
+export const Config : IFieldConfig = InitConfig(GlobalStore);
 
 function App() 
 {
   const editState = useEditState(job_data);
-
 
   return (
 
@@ -79,7 +82,8 @@ function App()
           <WorkbenchLayoutContainer >
             <WorkedContainer 
               jobData={job_data} 
-              editStateHook={editState}  />
+              editStateHook={editState} 
+              store={GlobalStore} />
           </WorkbenchLayoutContainer>
         <BottomBar jobData={job_data} editStateHook={editState}></BottomBar>
       </AppLayoutContainer>

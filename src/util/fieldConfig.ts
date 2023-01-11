@@ -1,52 +1,43 @@
 import { useContext } from "react";
 import { IJobData, IFieldConfig, IMainJOB } from "../contexts/types/interface";
 import { IUseEditState, useEditState } from "../hooks";
+import {  Store } from "../hooks/index2";
 import { IContextEnviroment } from "./context";
 
-export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) : IFieldConfig =>
+
+export const InitConfig = (storeObject: Store) : IFieldConfig =>
 {
     return {
         blocks: 
         [
             {
-                items:
+                options:
                 [
                     {
                         no: 1,
                         caption: "タイトル",
                         type: "text",
                         valueType: "string",
-                        onGetValue: (() : string  => editStateHook.title),
-                        onChange: (newValue : string) =>
-                        {
-                            editStateHook.setTitle(newValue);
-                        }
-                    }
+                        getter: () => storeObject.getTitle(),
+                        setter: (value: string) => storeObject.setTitle(value),
+                    },
                 ]
             },
 
             {
-                items:
+                options:
                 [
                     {
                         no: 2,
                         caption: "職種",
                         type: "jobSelecter",
                         valueType: "jobData",
-                        
-                        onGetValue: () =>
-                        {
-                            const m = editStateHook.mainJob != null ? editStateHook.mainJob.name : "";
-                            const s = editStateHook.subJob != null ? editStateHook.subJob.name : "";
 
-                            return `メイン:${m}\nサブ:${s}`
-                        },
-
-                        onGetValueArray: ()=>
+                        getter: () => [storeObject.getSelectedMainJob(), storeObject.getSelectedSubJob()],
+                        setter: (jobs) => 
                         {
-                            const m = editStateHook.mainJob != null ? editStateHook.mainJob.name : "";
-                            const s = editStateHook.subJob != null ? editStateHook.subJob.name : "";
-                            return [m, s];
+                            storeObject.setSelectedMainJob(jobs[0]);
+                            storeObject.setSelectedSubJob(jobs[1]);
                         }
                     },
 
@@ -56,17 +47,13 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         type: "readonly",
                         valueType: "string",
 
-                        onGetValue: (() : string  => 
-                        {
-                            if (editStateHook.subJob == null) return "";
-                            return editStateHook.subJob.tips;
-                        }),
+                        getter: () => storeObject.getTips(),
                     }
                 ]
             },
 
             {
-                items:
+                options:
                 [
                     {
                         no: 3,
@@ -74,20 +61,20 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         type: "infoList",
                         valueType: "string",
 
-                        onGetValue: () =>
-                        {
-                            if (editStateHook.subJob == null) return "";
+                        // onGetValue: () =>
+                        // {
+                        //     if (editStateHook.subJob == null) return "";
 
-                            const s = editStateHook.subJob.info.filter(inf => inf.checked).map(info =>
-                            {
-                               return info.items.map(v => [v.name, `${v.prefix}${v.value}${v.suffix}`]);
-                            });
+                        //     const s = editStateHook.subJob.info.filter(inf => inf.checked).map(info =>
+                        //     {
+                        //        return info.items.map(v => [v.name, `${v.prefix}${v.value}${v.suffix}`]);
+                        //     });
 
-                            console.log(editStateHook.subJob);
-                            console.log(s);
+                        //     console.log(editStateHook.subJob);
+                        //     console.log(s);
 
-                            return "";
-                        }
+                        //     return "";
+                        // }
                     },
 
                     {
@@ -95,31 +82,26 @@ export const createConfig = (jobData : IJobData, editStateHook : IUseEditState) 
                         caption: "フリー入力",
                         type: "multiLineText",
                         valueType: "string",
-                        onGetValue: () => editStateHook.freeText,
-                        onChange: (newValue : string) =>
-                        {
-                            editStateHook.setFreeText(newValue);
-                        }
+                        getter: () => storeObject.getFreeText(),
+                        setter: (value: string) => storeObject.setFreeText(value),
                     }
                 ]
             },
 
             {
-                items:
+                options:
                 [
                     {
                         no: 5,
                         caption: "退職理由",
                         type: "multiLineText",
                         valueType: "string",
-                        onGetValue: () => editStateHook.reason,
-                        onChange: (newValue : string) =>
-                        {
-                            editStateHook.setReasonText(newValue);
-                        }
+                        getter: () => storeObject.getReason(),
+                        setter: (value: string) => storeObject.setReason(value),
                     }
                 ]
             }
         ]
     }
 }
+

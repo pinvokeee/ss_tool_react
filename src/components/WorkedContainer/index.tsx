@@ -1,23 +1,61 @@
 import { Box, Button, Snackbar, Stack, styled } from "@mui/material";
 import { randomInt } from "crypto";
-import { ReactNode, useContext, useState } from "react";
+import { ReactNode, useContext, useMemo, useState } from "react";
+import { Config } from "../../App";
 import { contextIJobData } from "../../contexts/contexts";
-import { IFieldConfig, IFieldSetting, IJobData, IMainJOB } from "../../contexts/types/interface";
+import { IFieldConfig, IFieldOption, IJobData, IMainJOB } from "../../contexts/types/interface";
 import { IUseEditState, useEditState } from "../../hooks";
+import { Store } from "../../hooks/index2";
 import { contextSnackBarState, setSnackBarStateContext } from "../../Provider/ProviderSnackBarContext";
-import { createConfig } from "../../util/fieldConfig";
 import { generateUuid } from "../../util/util";
 import { FieldBase, InfoInputField, MultiLineTextField, ReadOnlyField } from "../dataInputField/Base";
+import { FieldInput, FieldReadOnly, FieldTextArea } from "../dataInputField/Base/ex";
+
 import { FieldJobTypeSelecter } from "../dataInputField/jobTypeSelecter";
 import { WorkedTimeLine } from "../WorkedTimeLine";
 
-const createDataField = ( fieldSetting : IFieldSetting, context : IJobData, editStateHook : IUseEditState ) =>
+const createDataField = (fieldSetting : IFieldOption, store: Store) =>
 {
-    if (fieldSetting.type == "text") return <FieldBase key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} onGetValue={ fieldSetting.onGetValue } onHandle={ fieldSetting.onChange }></FieldBase>;
-    if (fieldSetting.type == "multiLineText") return <MultiLineTextField key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} onGetValue={ fieldSetting.onGetValue } onHandle={ fieldSetting.onChange }></MultiLineTextField>;
-    if (fieldSetting.type == "readonly") return <ReadOnlyField key={fieldSetting.no} labelText={`${fieldSetting.caption}`} onGetValue={ fieldSetting.onGetValue }></ReadOnlyField>;
-    if (fieldSetting.type == "jobSelecter") return <FieldJobTypeSelecter key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} mainJobList={editStateHook.jobEditData} editStateHook={editStateHook} ></FieldJobTypeSelecter>;
-    if (fieldSetting.type == "infoList") return <InfoInputField key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} editStateHook={editStateHook}></InfoInputField>
+    if (fieldSetting.type == "text")
+    {
+        return <FieldInput 
+        labelText={`${fieldSetting.no}.${fieldSetting.caption}`}
+        storeObject={store} 
+        getter={fieldSetting.getter} 
+        setter={fieldSetting.setter} />
+    }
+
+    if (fieldSetting.type == "multiLineText") 
+    {
+        return <FieldTextArea 
+        labelText={`${fieldSetting.no}.${fieldSetting.caption}`}
+        storeObject={store} 
+        getter={fieldSetting.getter} 
+        setter={fieldSetting.setter} />;
+    }
+
+    if (fieldSetting.type == "readonly")
+    {
+        return <FieldReadOnly 
+        labelText={`${fieldSetting.caption}`}
+        storeObject={store} 
+        getter={fieldSetting.getter} 
+        setter={fieldSetting.setter}/>;
+    }
+
+    if (fieldSetting.type == "jobSelecter")
+    {
+        return <FieldJobTypeSelecter
+        storeObject={store} 
+        labelText={`${fieldSetting.no}.${fieldSetting.caption}`} />
+    }
+    
+    // if (fieldSetting.type == "text") return <FieldBase key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} onGetValue={ fieldSetting.onGetValue } onHandle={ fieldSetting.onChange }></FieldBase>;
+
+
+    // if (fieldSetting.type == "jobSelecter") return <FieldJobTypeSelecter key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} mainJobList={editStateHook.jobEditData} editStateHook={editStateHook} ></FieldJobTypeSelecter>;
+    // if (fieldSetting.type == "infoList") return <InfoInputField key={fieldSetting.no} labelText={`${fieldSetting.no}.${fieldSetting.caption}`} editStateHook={editStateHook}></InfoInputField>
+    
     return <></>
 }
 
@@ -25,6 +63,8 @@ interface IWorkedContainerProps
 {
     jobData : IJobData,
     editStateHook : IUseEditState,
+
+    store: Store,
 
     snackBarState? : any,
     snackbarActionMethod? : (state : any) => void,
@@ -43,7 +83,7 @@ const Container = styled("div")(({ theme }) =>
 
 export const WorkedContainer = (props : IWorkedContainerProps) =>
 {
-    const fieldData = createConfig(props.jobData, props.editStateHook);
+    const mainJobs = useMemo(() => props.jobData.jobs, [props.jobData.jobs]);
 
     const snackbarStateContext = useContext(contextSnackBarState);
     const setSnackbarStateContext = useContext(setSnackBarStateContext);
@@ -59,18 +99,19 @@ export const WorkedContainer = (props : IWorkedContainerProps) =>
         />
 
         <Container>
-            <WorkedTimeLine fieldConfig={fieldData} editStateHook={props.editStateHook}></WorkedTimeLine>
+            <div></div>
+            {/* <WorkedTimeLine fieldConfig={fieldData} editStateHook={props.editStateHook}></WorkedTimeLine> */}
             <Stack spacing={4} sx={ { overflowY: "auto", padding: "22px" } }>
                 {
-                    fieldData.blocks.map((block, i) => 
+                    Config.blocks.map((block, i) => 
                     {
                         return (
                         <Stack direction="row" spacing={2}>
                         {
-                            block.items.map((item) => 
+                            block.options.map((item) => 
                             {
                                 return (
-                                    createDataField(item, props.jobData, props.editStateHook)
+                                    createDataField(item, props.store)
                                 );
                             })
                         }

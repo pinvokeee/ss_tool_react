@@ -1,7 +1,7 @@
 import { Timeline, TimelineItem, TimelineSeparator, TimelineDot, TimelineConnector, TimelineContent, timelineItemClasses } from "@mui/lab";
 import { Box, Card, CardContent, Paper, Stack, styled, Typography } from "@mui/material";
 import React from "react";
-import { IFieldConfig, IFieldSetting } from "../../contexts/types/interface";
+import { IFieldConfig, IFieldOption } from "../../contexts/types/interface";
 import { IUseEditState } from "../../hooks";
 import { generateUuid } from "../../util/util";
 import { TextPreView } from "../TextPreView";
@@ -17,9 +17,9 @@ const PreView = (props: IPreViewText) =>
   </>
 }
 
-const createContentElement = (item: IFieldSetting) =>
+const createContentElement = (item: IFieldOption) =>
 {
-  const arr = item.onGetValueArray?.call(this);
+  const arr = item.getter?.call(this);
 
   if (item.type == "jobSelecter")
   {
@@ -35,7 +35,7 @@ const createContentElement = (item: IFieldSetting) =>
     </>
   }
 
-  return <TextPreView>{item.onGetValue?.call(this)}</TextPreView>
+  return <TextPreView>{item.getter?.call(this)}</TextPreView>
 }
 
 const PreviewCard = styled(Paper)((theme) => 
@@ -103,8 +103,8 @@ interface IWorkedTimeLineProps
 
 export const WorkedTimeLine = (props : IWorkedTimeLineProps) =>
 {
-    const timelineitems: IFieldSetting[] = [];
-    props.fieldConfig.blocks.forEach(block => block.items.filter(item => item.no > -1).forEach(mitem => timelineitems.push(mitem)));
+    const timelineitems: IFieldOption[] = [];
+    props.fieldConfig.blocks.forEach(block => block.options.filter(item => item.no > -1).forEach(mitem => timelineitems.push(mitem)));
 
     return (
       <Box sx={{ overflowY: "auto", borderRight: "1px solid lightgray", height: "100%" }}>

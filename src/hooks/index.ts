@@ -85,6 +85,7 @@ const initEditJobData = (baseJobData : IJobData) =>
     });
 }
 
+
 export const useEditState = (baseJobData? : IJobData) : IUseEditState =>
 {
     const [baseIJobData] = useState<IJobData>(baseJobData as IJobData);

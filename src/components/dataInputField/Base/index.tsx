@@ -31,6 +31,24 @@ export const FieldBase = (props : IFieldProps) =>
     )
 }
 
+export const FieldBaseEx = (props : IFieldProps) =>
+{
+    // console.log(`redender: ${props.labelText}`);
+
+    return (
+        <Stack spacing={2} sx={{ width: "100%" }}>
+            <FieldLabel text={ props.labelText }></FieldLabel>
+            
+            <TextField 
+                sx={{ width: "100%" }} 
+                value = {  props.onGetValue?.call(this) }
+                onChange={ (event: React.ChangeEvent<HTMLInputElement>) => props.onHandle?.call(this, event.target.value) }>
+            </TextField>
+
+        </Stack>
+    )
+}
+
 export const MultiLineTextField = (props : IFieldProps) =>
 {
     // console.log(`redender: ${props.labelText}`);
